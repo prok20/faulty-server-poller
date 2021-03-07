@@ -1,0 +1,20 @@
+[package]
+name = "faulty-server-poller"
+version = "0.1.0"
+authors = ["Alexander Prokudin <prok20@inbox.ru>"]
+edition = "2018"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+path = "src/main.rs"
+name = "faulty-server-poller"
+
+[dependencies]
+actix-web = "4.0.0-beta.3"
+anyhow = "1.0.38"
+async-trait = "0.1.42"
+serde = "1.0.124"
+serde-aux = "2.1.1"
+uuid = { version = "0.8.2", features = ["v4", "serde"] }
