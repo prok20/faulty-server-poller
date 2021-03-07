@@ -1,14 +1,22 @@
 use actix_web::{web, App, HttpServer};
+use faulty_server_poller::configuration::get_settings;
 
-#[allow(unreachable_code)]
 #[actix_web::main]
 async fn main() {
+    run_app().await;
+}
+
+async fn run_app() {
+    let settings = get_settings().expect("Failed to get configuration");
+
     HttpServer::new(move || App::new().configure(|cfg| configure_features(cfg)))
-        .bind("localhost:8080") // TODO: replace with address gained from settings
+        .bind(settings.application.address())
         .expect("Unable to bind server to an address")
         .run()
         .await
         .expect("Failed to run the server");
+
+    println!("{:?}", settings);
 }
 
 fn configure_features(cfg: &mut web::ServiceConfig) {
@@ -22,7 +30,6 @@ fn configure_health_check(cfg: &mut web::ServiceConfig) {
     controller::configure(cfg);
 }
 
-#[allow(unreachable_code)]
 fn configure_poller(_cfg: &mut web::ServiceConfig) {
     unimplemented!()
 }
