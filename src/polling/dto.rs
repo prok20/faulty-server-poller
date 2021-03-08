@@ -3,6 +3,7 @@ use uuid::Uuid;
 
 pub type RunId = Uuid;
 
+#[derive(Debug, Clone, PartialEq)]
 pub struct NewRun {
     pub id: RunId,
     pub seconds: u64,

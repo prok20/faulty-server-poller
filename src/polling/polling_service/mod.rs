@@ -1,7 +1,11 @@
 use async_trait::async_trait;
 
+pub use polling_service_impl::PollingServiceImpl;
+
 use crate::polling::dto::{Run, RunId, StartRunRequestDto, StartRunResponseDto};
 use crate::polling::errors::ServiceResult;
+
+mod polling_service_impl;
 
 #[cfg_attr(test, mockall::automock)]
 #[async_trait(? Send)]

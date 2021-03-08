@@ -39,13 +39,12 @@ mod should {
     use crate::polling::polling_service::MockPollingService;
     use actix_web::{test, App};
     use mockall::predicate::*;
-    use std::str::FromStr;
 
     #[actix_rt::test]
     async fn start_new_run() {
         let request_payload = StartRunRequestDto { seconds: 30 };
         let expected_response = StartRunResponseDto {
-            id: RunId::from_str("cdc97318-ffb2-4350-b8d9-446cdd773a08").unwrap(),
+            id: RunId::new_v4(),
         };
 
         let polling_service = {
@@ -74,7 +73,7 @@ mod should {
 
     #[actix_rt::test]
     async fn get_existing_run() {
-        let run_id = RunId::from_str("cdc97318-ffb2-4350-b8d9-446cdd773a08").unwrap();
+        let run_id = RunId::new_v4();
         let expected_response = Run {
             id: run_id,
             status: RunStatus::Finished,

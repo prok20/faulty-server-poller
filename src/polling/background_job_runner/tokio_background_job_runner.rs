@@ -88,7 +88,7 @@ where
 
         let requests = stream::repeat(())
             .map(|_| {
-                let id = job.id.clone();
+                let id = job.id;
                 async move { request_sender.send_request(id).await }
             })
             .buffer_unordered(concurrent_requests_per_run);
@@ -161,7 +161,7 @@ mod should {
     #[actix_rt::test]
     async fn successfully_execute_single_job() {
         let job = RunJob {
-            id: RunId::from_str("247fe111-0018-485e-9971-66cb27308221").unwrap(),
+            id: RunId::new_v4(),
             duration: std::time::Duration::from_secs(3),
         };
 
