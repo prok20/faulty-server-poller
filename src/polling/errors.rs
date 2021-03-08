@@ -1,7 +1,8 @@
 use actix_web::{HttpResponse, ResponseError};
+use async_channel::TrySendError;
 use thiserror::Error;
 
-#[derive(Debug, Error, Clone)]
+#[derive(Debug, Error, Clone, PartialEq)]
 pub enum ServiceError {
     #[error("Internal Server Error")]
     InternalServerError,
@@ -18,6 +19,15 @@ impl ResponseError for ServiceError {
             ServiceError::TooManyRequests => {
                 HttpResponse::TooManyRequests().json("Too many requests, please try again later")
             }
+        }
+    }
+}
+
+impl<T> From<TrySendError<T>> for ServiceError {
+    fn from(e: TrySendError<T>) -> Self {
+        match e {
+            TrySendError::Closed(_) => Self::InternalServerError,
+            TrySendError::Full(_) => Self::TooManyRequests,
         }
     }
 }

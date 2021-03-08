@@ -1,3 +1,8 @@
 application:
   host: 0.0.0.0
   port: 8080
+polling:
+  polling_address: "http://faulty-server-htz-nbg1-1.wvservices.exchange:8080"
+  max_concurrent_runs: 3
+  max_pending_runs: 2
+  concurrent_requests_per_run: 3

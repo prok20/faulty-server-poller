@@ -14,11 +14,14 @@ name = "faulty-server-poller"
 [dependencies]
 actix-web = "4.0.0-beta.3"
 anyhow = "1.0.38"
+async-channel = "1.6.1"
 async-trait = "0.1.42"
 config = { version = "0.10.1", features = ["yaml"] }
+futures = "0.3.13"
 serde = "1.0.124"
 serde-aux = "2.1.1"
 thiserror = "1.0.24"
+tokio = { version = "1.2.0", features = ["macros", "rt-multi-thread", "time"] }
 uuid = { version = "0.8.2", features = ["v4", "serde"] }
 
 [dev-dependencies]

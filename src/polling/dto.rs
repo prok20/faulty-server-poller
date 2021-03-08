@@ -1,5 +1,4 @@
-use crate::polling::errors::ServiceResult;
-use async_trait::async_trait;
+use std::time::Duration;
 use uuid::Uuid;
 
 pub type RunId = Uuid;
@@ -40,27 +39,14 @@ pub enum FaultyServerResponse {
     Err { error: String },
 }
 
-#[cfg_attr(test, mockall::automock)]
-#[async_trait(?Send)]
-pub trait RunRepo {
-    async fn generate_run_id(&self) -> RunId;
-    async fn save_run(&self, run: &NewRun) -> ServiceResult<()>;
-    async fn update_run(&self, run: &Run) -> ServiceResult<()>;
-    async fn get_run(&self, run_id: RunId) -> ServiceResult<Run>;
+#[derive(Debug, Clone, PartialEq)]
+pub struct RunJob {
+    pub id: RunId,
+    pub duration: Duration,
 }
 
-#[cfg_attr(test, mockall::automock)]
-#[async_trait(?Send)]
-pub trait PollingService {
-    async fn start_run(
-        &self,
-        start_run_request_dto: StartRunRequestDto,
-    ) -> ServiceResult<StartRunResponseDto>;
-    async fn get_run(&self, run_id: RunId) -> ServiceResult<Run>;
-}
-
-#[cfg_attr(test, mockall::automock)]
-#[async_trait(?Send)]
-pub trait RequestSender {
-    async fn send_request(&self) -> FaultyServerResponse;
+pub struct RunJobResult {
+    pub id: RunId,
+    pub successful_responses: u64,
+    pub value_sum: u64,
 }

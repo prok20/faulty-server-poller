@@ -1,7 +1,8 @@
 use actix_web::{guard, web, Responder};
 
+use crate::polling::dto::{RunId, StartRunRequestDto};
 use crate::polling::errors::ServiceResult;
-use crate::polling::ports::*;
+use crate::polling::polling_service::PollingService;
 
 async fn start_run<T: PollingService>(
     service: web::Data<T>,
@@ -34,6 +35,8 @@ pub fn configure<T: 'static + PollingService>(service: web::Data<T>, cfg: &mut w
 #[cfg(test)]
 mod should {
     use super::*;
+    use crate::polling::dto::{Run, RunStatus, StartRunResponseDto};
+    use crate::polling::polling_service::MockPollingService;
     use actix_web::{test, App};
     use mockall::predicate::*;
     use std::str::FromStr;
