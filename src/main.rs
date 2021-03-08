@@ -9,7 +9,7 @@ async fn main() {
 async fn run_app() {
     let settings = get_settings().expect("Failed to get configuration");
 
-    HttpServer::new(move || App::new().configure(|cfg| configure_features(cfg)))
+    HttpServer::new(move || App::new().configure(configure_features))
         .bind(settings.application.address())
         .expect("Unable to bind server to an address")
         .run()

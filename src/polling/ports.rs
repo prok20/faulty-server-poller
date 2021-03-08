@@ -9,21 +9,23 @@ pub struct NewRun {
     pub seconds: u64,
 }
 
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub enum RunStatus {
     Finished,
     InProgress,
 }
 
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct StartRunRequestDto {
     pub seconds: u64,
 }
 
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct StartRunResponseDto {
     pub id: RunId,
 }
 
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Run {
     pub id: RunId,
     pub status: RunStatus,
@@ -31,6 +33,7 @@ pub struct Run {
     pub sum: u64,
 }
 
+#[cfg_attr(test, mockall::automock)]
 #[async_trait]
 pub trait RunRepo {
     async fn generate_run_id(&self) -> RunId;
@@ -39,6 +42,7 @@ pub trait RunRepo {
     async fn get_run(&self, run_id: RunId) -> ServiceResult<Run>;
 }
 
+#[cfg_attr(test, mockall::automock)]
 #[async_trait]
 pub trait PollingService {
     async fn start_run(

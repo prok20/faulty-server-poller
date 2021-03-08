@@ -20,3 +20,7 @@ serde = "1.0.124"
 serde-aux = "2.1.1"
 thiserror = "1.0.24"
 uuid = { version = "0.8.2", features = ["v4", "serde"] }
+
+[dev-dependencies]
+actix-rt = "2.1.0"
+mockall = "0.9.1"

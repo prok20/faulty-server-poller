@@ -1,7 +1,7 @@
 use actix_web::{HttpResponse, ResponseError};
 use thiserror::Error;
 
-#[derive(Error, Debug)]
+#[derive(Debug, Error, Clone)]
 pub enum ServiceError {
     #[error("Internal Server Error")]
     InternalServerError,
