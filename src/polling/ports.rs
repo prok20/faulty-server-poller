@@ -33,8 +33,15 @@ pub struct Run {
     pub sum: u64,
 }
 
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
+#[serde(untagged)]
+pub enum FaultyServerResponse {
+    Ok { value: u32 },
+    Err { error: String },
+}
+
 #[cfg_attr(test, mockall::automock)]
-#[async_trait]
+#[async_trait(?Send)]
 pub trait RunRepo {
     async fn generate_run_id(&self) -> RunId;
     async fn save_run(&self, run: &NewRun) -> ServiceResult<()>;
@@ -43,11 +50,17 @@ pub trait RunRepo {
 }
 
 #[cfg_attr(test, mockall::automock)]
-#[async_trait]
+#[async_trait(?Send)]
 pub trait PollingService {
     async fn start_run(
         &self,
         start_run_request_dto: StartRunRequestDto,
     ) -> ServiceResult<StartRunResponseDto>;
     async fn get_run(&self, run_id: RunId) -> ServiceResult<Run>;
+}
+
+#[cfg_attr(test, mockall::automock)]
+#[async_trait(?Send)]
+pub trait RequestSender {
+    async fn send_request(&self) -> FaultyServerResponse;
 }
