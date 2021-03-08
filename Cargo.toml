@@ -18,4 +18,5 @@ async-trait = "0.1.42"
 config = { version = "0.10.1", features = ["yaml"] }
 serde = "1.0.124"
 serde-aux = "2.1.1"
+thiserror = "1.0.24"
 uuid = { version = "0.8.2", features = ["v4", "serde"] }
