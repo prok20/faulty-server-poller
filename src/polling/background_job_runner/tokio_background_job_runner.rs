@@ -12,11 +12,12 @@ use crate::polling::errors::ServiceResult;
 use crate::polling::request_sender::RequestSender;
 use crate::polling::run_repository::RunRepository;
 
+#[derive(Clone, Debug)]
 pub struct TokioBackgroundJobRunner<R, S> {
     tx: Sender<RunJob>,
     // required because we do not use request sender in struct itself
-    request_sender_type: PhantomData<*const S>,
-    run_repo_type: PhantomData<*const R>,
+    request_sender_type: PhantomData<S>,
+    run_repo_type: PhantomData<R>,
 }
 
 impl<R, S> TokioBackgroundJobRunner<R, S>
@@ -44,43 +45,46 @@ where
         request_sender: S,
         settings: PollingSettings,
     ) {
-        for _ in 0..settings.max_concurrent_runs {
+        for _ in 0..settings.max_concurrent_runs - 1 {
             let run_repo = run_repo.clone();
             let settings = settings.clone();
             let rx = rx.clone();
             let request_sender = request_sender.clone();
 
             tokio::spawn(async move {
-                loop {
-                    let job = rx.recv().await.expect("Channel is closed");
-
-                    let result = Self::execute_job(
-                        job,
-                        &request_sender,
-                        &settings.polling_address,
-                        settings.concurrent_requests_per_run,
-                    )
-                    .await;
-
-                    run_repo
-                        .update_run(&Run {
-                            id: result.id,
-                            status: RunStatus::Finished,
-                            successful_responses_count: result.successful_responses,
-                            sum: result.value_sum,
-                        })
-                        .await
-                        .expect("Failed to update run in repository");
-                }
+                Self::process_run_jobs(run_repo, rx, request_sender, settings).await;
             });
+        }
+        Self::process_run_jobs(run_repo, rx, request_sender, settings).await;
+    }
+
+    async fn process_run_jobs(
+        run_repo: R,
+        rx: Receiver<RunJob>,
+        request_sender: S,
+        settings: PollingSettings,
+    ) {
+        loop {
+            let job = rx.recv().await.expect("Channel is closed");
+
+            let result =
+                Self::execute_job(job, &request_sender, settings.concurrent_requests_per_run).await;
+
+            run_repo
+                .update_run(&Run {
+                    id: result.id,
+                    status: RunStatus::Finished,
+                    successful_responses_count: result.successful_responses,
+                    sum: result.value_sum,
+                })
+                .await
+                .expect("Failed to update run in repository");
         }
     }
 
-    #[allow(unused_variables)]
     async fn execute_job(
         job: RunJob,
         request_sender: &S,
-        polling_address: &str,
         concurrent_requests_per_run: usize,
     ) -> RunJobResult {
         let value_sum = Arc::new(Mutex::new(0u64));

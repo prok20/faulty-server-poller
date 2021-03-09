@@ -5,6 +5,7 @@ use crate::polling::polling_service::PollingService;
 use crate::polling::run_repository::RunRepository;
 use async_trait::async_trait;
 
+#[derive(Clone, Debug)]
 pub struct PollingServiceImpl<R, J> {
     run_repo: R,
     job_runner: J,
