@@ -1,3 +1,10 @@
 application:
   host: 127.0.0.1
   port: 8080
+database:
+  host: 127.0.0.1
+  port: 5432
+  username: "faulty_server_poller_service"
+  password: "service_password"
+  database: "faulty_server_poller"
+  connect_timeout_sec: 2

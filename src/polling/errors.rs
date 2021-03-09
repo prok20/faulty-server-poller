@@ -32,4 +32,10 @@ impl<T> From<TrySendError<T>> for ServiceError {
     }
 }
 
+impl From<sqlx::Error> for ServiceError {
+    fn from(_: sqlx::Error) -> Self {
+        Self::InternalServerError
+    }
+}
+
 pub type ServiceResult<V> = std::result::Result<V, ServiceError>;

@@ -1,3 +1,4 @@
+use crate::polling::errors::ServiceError;
 use std::time::Duration;
 use uuid::Uuid;
 
@@ -9,10 +10,22 @@ pub struct NewRun {
     pub seconds: u64,
 }
 
-#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, Copy, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub enum RunStatus {
-    Finished,
-    InProgress,
+    InProgress = 0,
+    Finished = 1,
+}
+
+impl std::convert::TryFrom<i16> for RunStatus {
+    type Error = ServiceError;
+
+    fn try_from(value: i16) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Self::InProgress),
+            1 => Ok(Self::Finished),
+            _ => Err(ServiceError::InternalServerError),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
