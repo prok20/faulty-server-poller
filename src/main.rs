@@ -1,3 +1,4 @@
+use actix_web::middleware::Logger;
 use actix_web::{web, App, HttpServer};
 use faulty_server_poller::configuration::get_settings;
 use faulty_server_poller::configuration::settings::Settings;
@@ -13,11 +14,12 @@ async fn main() {
 }
 
 async fn run_app() {
+    pretty_env_logger::init();
     let settings = get_settings().expect("Failed to get configuration");
     let polling_service = build_polling_service(&settings).await;
 
     HttpServer::new(move || {
-        App::new().configure(|cfg| {
+        App::new().wrap(Logger::default()).configure(|cfg| {
             configure_health_check(cfg);
             configure_poller(cfg, polling_service.clone());
         })
