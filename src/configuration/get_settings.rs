@@ -22,7 +22,7 @@ pub fn get_settings() -> Result<Settings> {
 
     conf.merge(config::File::from(conf_path.join(environment.as_str())).required(true))?;
 
-    conf.merge(config::Environment::with_prefix("APP").separator("_"))?;
+    conf.merge(config::Environment::with_prefix("app").separator("__"))?;
 
     Ok(conf.try_into()?)
 }
