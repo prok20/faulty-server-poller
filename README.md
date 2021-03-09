@@ -16,7 +16,9 @@
 **Configuration:**
 * Environment variable `APP_ENVIRONMENT` must be set to either `development` or `production`
 * .YAML files in `./configuration` folder
-* Environment variables starting with `APP_` prefix and following same structure as YAML with `__` (double undercore) separators
+* Environment variables starting with `APP_` prefix and following same structure as YAML with `__` (double undercore) separators overload corresponding properties from YAML configuration files
+  * Examples: `APP_POLLING__MAX_CONCURRENT_RUNS=2`, `APP_POLLING__MAX_PENDING_RUNS=5`
+* Additionally, you can control log level by `RUST_LOG` environment variable, e.g. `RUST_LOG=debug`
 
 **TODO** (что можно ещё доработать навскидку):
 * Отрефакторить код в TokioBackgroundJobRunner, можно разделить на отдельно структуры/трейты Keeper (трансмиттер команд) и Runner (выполнение)
