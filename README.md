@@ -2,6 +2,8 @@
 
 [Problem definition](problem.md)
 
+Proof of concept: apply testable ports and adapters pattern in Rust microservice
+
 **Requirements:**
 * Docker
 * Rustup-configured toolchain
